@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Agendas — Boletos de Lance | Rodobens</title>
+  <style>
+    :root{
+      --azul:#0b5db3;
+      --azul2:#07509e;
+      --verde:#16a34a;
+      --verde2:#0f8a3b;
+      --vermelho:#dc2626;
+      --amarelo:#b45309;
+      --roxo:#7c3aed;
+      --fundo:#f3f7fb;
+      --branco:#fff;
+      --texto:#0f172a;
+      --muted:#475569;
+      --linha:#dbe3ef;
+      --cinza:#f1f5f9;
+      --sombra:0 16px 45px rgba(15,23,42,.10);
+      --sombra2:0 3px 14px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,Arial,sans-serif;background:var(--fundo);color:var(--texto);min-height:100vh}
+    header{height:74px;background:var(--azul);box-shadow:var(--sombra2)}
+    main{max-width:1160px;margin:0 auto;padding:58px 18px 44px}
+    .home{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;max-width:790px;margin:0 auto}
+    .card{background:var(--branco);border:1px solid var(--linha);border-radius:14px;box-shadow:var(--sombra);overflow:hidden}
+    .home-card{min-height:326px;padding:42px 30px 30px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+    .home-card.admin{border-top:4px solid #1d6ed2}.home-card.operador{border-top:4px solid var(--verde)}
+    .icone{font-size:38px;line-height:1;margin-bottom:22px}.home-card h1{font-size:22px;margin-bottom:9px;font-weight:800}.home-card p{max-width:320px;color:#344761;font-size:14px;line-height:1.45;margin-bottom:26px}
+    button,.btn{border:0;border-radius:8px;padding:11px 16px;font-weight:800;cursor:pointer;font-size:14px;transition:.15s ease}.btn-azul{background:#075fc0;color:#fff}.btn-azul:hover{background:#064f9e}.btn-verde{background:var(--verde);color:#fff}.btn-verde:hover{background:var(--verde2)}.btn-cinza{background:#eef2f7;color:#0f172a}.btn-vermelho{background:var(--vermelho);color:#fff}.btn-outline{background:#fff;border:1px solid var(--linha);color:#0f172a}button:disabled{opacity:.55;cursor:not-allowed}
+    select,input,textarea{width:100%;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;padding:10px 12px;font-size:14px;outline:none}select:focus,input:focus,textarea:focus{border-color:#0b5db3;box-shadow:0 0 0 4px rgba(11,93,179,.10)}textarea{min-height:92px;resize:vertical}label{font-size:13px;font-weight:800;color:#26364c;margin:12px 0 6px;display:block}.operador-form{width:100%;display:grid;gap:10px;margin-top:8px}
+    .layout{display:none}.layout.ativo{display:block}.topbar{background:var(--azul);color:#fff;padding:18px 22px;margin:-58px -18px 28px}.topbar-inner{max-width:1160px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.topbar h2{font-size:24px;font-weight:900}.topbar p{font-size:13px;opacity:.92;margin-top:3px}.top-actions{display:flex;gap:10px;flex-wrap:wrap}.grid{display:grid;grid-template-columns:360px 1fr;gap:20px}.card-title{padding:16px 18px;border-bottom:1px solid var(--linha);display:flex;align-items:center;justify-content:space-between;gap:12px}.card-title h3{font-size:17px;font-weight:900}.card-body{padding:18px}.aviso{display:none;margin:12px 0;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.4}.aviso.info{display:block;background:#eaf3ff;border:1px solid #b6d7ff;color:#064f9e}.aviso.ok{display:block;background:#ecfdf3;border:1px solid #a7f3d0;color:#047857}.aviso.erro{display:block;background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}.botoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.filtros{display:grid;grid-template-columns:1fr 170px 150px;gap:12px;margin-bottom:16px}.lista{display:grid;gap:12px}.agenda{background:#fff;border:1px solid var(--linha);border-radius:13px;padding:15px;box-shadow:0 1px 6px rgba(15,23,42,.04)}.agenda-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.agenda h4{font-size:16px;margin-bottom:5px}.meta{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.obs{white-space:pre-wrap;font-size:13px;color:#334155;margin-top:10px;line-height:1.45}.badge{border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900;white-space:nowrap}.pendente{background:#fffbeb;color:#b45309}.andamento{background:#e0f2fe;color:#075985}.concluido{background:#ecfdf3;color:#047857}.cancelado{background:#fef2f2;color:#b91c1c}.outro{background:#f3e8ff;color:#7c3aed}.vazio{text-align:center;border:1px dashed #cbd5e1;border-radius:13px;background:#fff;color:#58677d;padding:36px}.oculto{display:none!important}.mini{font-size:12px;color:var(--muted);line-height:1.4;margin-top:12px}.login-box{max-width:430px;margin:0 auto}.area-operador{max-width:920px;margin:0 auto}.resumo-operador{margin-bottom:16px}.pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:9px 13px;font-size:13px}.dot{width:9px;height:9px;border-radius:50%;background:#22c55e;display:inline-block}.home-link{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35)}
+    @media(max-width:900px){.home,.grid{grid-template-columns:1fr}.filtros{grid-template-columns:1fr}.topbar h2{font-size:20px}}
+  </style>
+</head>
+<body>
+  <header></header>
+  <main>
+    <section id="telaHome" class="layout ativo">
+      <div class="home">
+        <div class="card home-card admin">
+          <div class="icone">🛠️</div>
+          <h1>Administrador</h1>
+          <p>Importar base, cadastrar operadores, configurar regras, distribuir agendas e acompanhar todos os indicadores.</p>
+          <button class="btn-azul" onclick="abrirAdmin()">Entrar como Admin</button>
+        </div>
+        <div class="card home-card operador">
+          <div class="icone">👨‍💻</div>
+          <h1>Operador</h1>
+          <p>Ver as agendas atribuídas a você, iniciar a execução, concluir e acompanhar suas pendências.</p>
+          <div class="operador-form">
+            <select id="selectOperadorHome"><option value="">Carregando operadores...</option></select>
+            <button class="btn-verde" onclick="entrarOperador()">Entrar como Operador</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="telaLoginAdmin" class="layout">
+      <div class="topbar">
+        <div class="topbar-inner">
+          <div><h2>Painel de Agendas — Administrador</h2><p>Login por e-mail validado na tabela administradores do Supabase.</p></div>
+          <div class="top-actions"><button class="home-link" onclick="voltarHome()">Voltar</button></div>
+        </div>
+      </div>
+      <div class="card login-box">
+        <div class="card-title"><h3>Entrar como administrador</h3></div>
+        <div class="card-body">
+          <div id="avisoLogin" class="aviso info">Digite o e-mail cadastrado como administrador e clique em enviar link.</div>
+          <label for="emailAdmin">E-mail do administrador</label>
+          <input id="emailAdmin" type="email" placeholder="seu.email@empresa.com.br" autocomplete="email" />
+          <div class="botoes">
+            <button class="btn-azul" onclick="loginAdmin()">Enviar link de acesso</button>
+            <button class="btn-cinza" onclick="verificarSessao(true)">Já confirmei no e-mail</button>
+          </div>
+          <p class="mini">Importante: o link recebido por e-mail precisa voltar para o endereço do GitHub Pages configurado no Supabase Auth.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="telaAdmin" class="layout">
+      <div class="topbar">
+        <div class="topbar-inner">
+          <div><h2>Painel de Agendas — Administrador</h2><p>Cadastro, edição e exclusão sincronizados com Supabase.</p></div>
+          <div class="top-actions"><span class="pill"><span class="dot"></span><span id="adminIdentidade">Admin conectado</span></span><button class="home-link" onclick="logoutAdmin()">Sair</button></div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-title"><h3 id="tituloForm">Nova agenda</h3></div>
+          <div class="card-body">
+            <div id="avisoAdmin" class="aviso info">Preencha os dados e salve. O operador será guardado dentro da observação para manter compatibilidade com a tabela atual.</div>
+            <input type="hidden" id="agendaId" />
+            <label>Título</label><input id="tituloAgenda" placeholder="Ex.: Boleto de lance — cliente X" />
+            <label>Operador responsável</label><input id="operadorAgenda" placeholder="Nome do operador" list="listaOperadores" />
+            <datalist id="listaOperadores"></datalist>
+            <label>Data</label><input id="dataAgenda" type="date" />
+            <label>Status</label><select id="statusAgenda"><option>Pendente</option><option>Em andamento</option><option>Concluído</option><option>Cancelado</option></select>
+            <label>Observação</label><textarea id="observacaoAgenda" placeholder="Detalhes, pendências e instruções"></textarea>
+            <div class="botoes"><button class="btn-verde" onclick="salvarAgenda()">Salvar</button><button class="btn-cinza" onclick="limparForm()">Limpar</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h3>Todas as agendas</h3><button class="btn-cinza" onclick="carregarAgendas()">Atualizar</button></div>
+          <div class="card-body">
+            <div class="filtros"><input id="buscaAdmin" placeholder="Buscar" oninput="renderAdmin()"><select id="statusAdmin" onchange="renderAdmin()"><option value="">Todos os status</option><option>Pendente</option><option>Em andamento</option><option>Concluído</option><option>Cancelado</option></select><button class="btn-azul" onclick="carregarAgendas()">Recarregar</button></div>
+            <div id="listaAdmin" class="lista"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="telaOperador" class="layout area-operador">
+      <div class="topbar">
+        <div class="topbar-inner">
+          <div><h2>Painel de Agendas — Operador</h2><p id="subOperador">Agendas vinculadas ao operador selecionado.</p></div>
+          <div class="top-actions"><button class="home-link" onclick="voltarHome()">Voltar</button></div>
+        </div>
+      </div>
+      <div class="card resumo-operador"><div class="card-title"><h3 id="nomeOperadorTela">Operador</h3><button class="btn-cinza" onclick="carregarAgendas()">Atualizar</button></div></div>
+      <div class="card"><div class="card-title"><h3>Minhas agendas</h3></div><div class="card-body"><div id="listaOperador" class="lista"></div></div></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://mnlmvhykhjftmcirhkah.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_8-VUAvVJrrC2yitlQhfPzg_46gd8gIH";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    let agendas = [];
+    let adminLogado = false;
+    let operadorAtual = "";
+
+    function tela(id){document.querySelectorAll('.layout').forEach(s=>s.classList.remove('ativo'));document.getElementById(id).classList.add('ativo')}
+    function voltarHome(){tela('telaHome');carregarAgendas()}
+    function abrirAdmin(){tela('telaLoginAdmin');verificarSessao(false)}
+    function aviso(id,tipo,msg){const e=document.getElementById(id);e.className='aviso '+tipo;e.textContent=msg}
+    function esc(v){return String(v||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')}
+    function fmtData(d){if(!d)return 'Sem data';const p=String(d).split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:d}
+    function classeStatus(s){s=(s||'').toLowerCase();if(s.includes('pendente'))return 'pendente';if(s.includes('andamento'))return 'andamento';if(s.includes('concl'))return 'concluido';if(s.includes('cancel'))return 'cancelado';return 'outro'}
+    function parseOperador(obs){const m=String(obs||'').match(/^Operador:\s*(.+)$/mi);return m?m[1].trim():''}
+    function obsLimpa(obs){return String(obs||'').replace(/^Operador:\s*.*\n?/mi,'').trim()}
+    function montarObs(operador, obs){const o=(operador||'').trim();const texto=(obs||'').trim();return `Operador: ${o}${texto?'\n\n'+texto:''}`.trim()}
+
+    async function loginAdmin(){
+      const email=document.getElementById('emailAdmin').value.trim();
+      if(!email){aviso('avisoLogin','erro','Digite o e-mail completo do administrador.');return}
+      const {error}=await supabaseClient.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.href.split('#')[0]}});
+      if(error){console.error(error);aviso('avisoLogin','erro','Erro ao enviar link. Confira o Auth do Supabase.');return}
+      aviso('avisoLogin','ok','Link enviado. Abra o e-mail, confirme o acesso e volte para o painel.');
+    }
+    async function verificarSessao(mostrarErro){
+      const {data:sessionData}=await supabaseClient.auth.getSession();
+      const session=sessionData&&sessionData.session;
+      if(!session){if(mostrarErro)aviso('avisoLogin','info','Ainda não há sessão ativa. Confirme o link recebido por e-mail.');return false}
+      const email=session.user.email;
+      const {data,error}=await supabaseClient.from('administradores').select('email').eq('email',email).maybeSingle();
+      if(error){console.error(error);aviso('avisoLogin','erro','Erro ao validar administrador. Confira as policies.');return false}
+      if(!data){aviso('avisoLogin','erro','Este e-mail entrou, mas não está cadastrado como administrador.');return false}
+      adminLogado=true;document.getElementById('adminIdentidade').textContent=email;tela('telaAdmin');await carregarAgendas();return true;
+    }
+    async function logoutAdmin(){await supabaseClient.auth.signOut();adminLogado=false;voltarHome()}
+
+    async function carregarAgendas(){
+      const {data,error}=await supabaseClient.from('agendas').select('*').order('data_agenda',{ascending:true}).order('id',{ascending:true});
+      if(error){console.error(error);agendas=[]}else{agendas=data||[]}
+      popularOperadores();renderAdmin();renderOperador();
+    }
+    function listaOperadoresUnicos(){return [...new Set(agendas.map(a=>parseOperador(a.observacao)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'))}
+    function popularOperadores(){
+      const ops=listaOperadoresUnicos();
+      const sel=document.getElementById('selectOperadorHome');
+      sel.innerHTML='<option value="">Selecione seu nome...</option>'+ops.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('');
+      document.getElementById('listaOperadores').innerHTML=ops.map(o=>`<option value="${esc(o)}"></option>`).join('');
+    }
+    function entrarOperador(){
+      const op=document.getElementById('selectOperadorHome').value;
+      if(!op){alert('Selecione um operador. Se a lista estiver vazia, cadastre uma agenda com operador pelo Admin.');return}
+      operadorAtual=op;document.getElementById('nomeOperadorTela').textContent=op;document.getElementById('subOperador').textContent='Agendas vinculadas a '+op+'.';tela('telaOperador');renderOperador();
+    }
+    function cardAgenda(a,admin){
+      const op=parseOperador(a.observacao);const obs=obsLimpa(a.observacao);const cls=classeStatus(a.status);
+      return `<article class="agenda"><div class="agenda-top"><div><h4>${esc(a.titulo)}</h4><div class="meta"><span>Data: ${fmtData(a.data_agenda)}</span>${op?`<span>Operador: ${esc(op)}</span>`:''}<span>ID: ${a.id}</span></div></div><span class="badge ${cls}">${esc(a.status||'Pendente')}</span></div>${obs?`<div class="obs">${esc(obs)}</div>`:''}${admin?`<div class="botoes"><button class="btn-cinza" onclick="editarAgenda(${a.id})">Editar</button><button class="btn-vermelho" onclick="excluirAgenda(${a.id})">Excluir</button></div>`:''}</article>`
+    }
+    function renderAdmin(){
+      const el=document.getElementById('listaAdmin');if(!el)return;
+      const termo=(document.getElementById('buscaAdmin')?.value||'').toLowerCase();const st=document.getElementById('statusAdmin')?.value||'';
+      let dados=agendas.filter(a=>(!st||a.status===st));
+      if(termo)dados=dados.filter(a=>`${a.titulo||''} ${a.observacao||''} ${parseOperador(a.observacao)}`.toLowerCase().includes(termo));
+      el.innerHTML=dados.length?dados.map(a=>cardAgenda(a,true)).join(''):'<div class="vazio">Nenhuma agenda encontrada.</div>';
+    }
+    function renderOperador(){
+      const el=document.getElementById('listaOperador');if(!el||!operadorAtual)return;
+      const dados=agendas.filter(a=>parseOperador(a.observacao)===operadorAtual);
+      el.innerHTML=dados.length?dados.map(a=>cardAgenda(a,false)).join(''):'<div class="vazio">Nenhuma agenda atribuída a este operador.</div>';
+    }
+    async function salvarAgenda(){
+      const ok=await verificarSessao(true);if(!ok)return;
+      const id=document.getElementById('agendaId').value;const titulo=document.getElementById('tituloAgenda').value.trim();const operador=document.getElementById('operadorAgenda').value.trim();const data_agenda=document.getElementById('dataAgenda').value||null;const status=document.getElementById('statusAgenda').value;const observacao=montarObs(operador,document.getElementById('observacaoAgenda').value);
+      if(!titulo){aviso('avisoAdmin','erro','Informe o título.');return} if(!operador){aviso('avisoAdmin','erro','Informe o operador responsável.');return}
+      let res=id?await supabaseClient.from('agendas').update({titulo,data_agenda,status,observacao,atualizado_em:new Date().toISOString()}).eq('id',id):await supabaseClient.from('agendas').insert([{titulo,data_agenda,status,observacao}]);
+      if(res.error){console.error(res.error);aviso('avisoAdmin','erro','Erro ao salvar. Confira login e policies do Supabase.');return}
+      aviso('avisoAdmin','ok',id?'Agenda atualizada com sucesso.':'Agenda cadastrada com sucesso.');limparForm();await carregarAgendas();
+    }
+    function editarAgenda(id){const a=agendas.find(x=>Number(x.id)===Number(id));if(!a)return;document.getElementById('agendaId').value=a.id;document.getElementById('tituloAgenda').value=a.titulo||'';document.getElementById('operadorAgenda').value=parseOperador(a.observacao);document.getElementById('dataAgenda').value=a.data_agenda||'';document.getElementById('statusAgenda').value=a.status||'Pendente';document.getElementById('observacaoAgenda').value=obsLimpa(a.observacao);document.getElementById('tituloForm').textContent='Editar agenda';window.scrollTo({top:0,behavior:'smooth'})}
+    function limparForm(){document.getElementById('agendaId').value='';document.getElementById('tituloAgenda').value='';document.getElementById('operadorAgenda').value='';document.getElementById('dataAgenda').value='';document.getElementById('statusAgenda').value='Pendente';document.getElementById('observacaoAgenda').value='';document.getElementById('tituloForm').textContent='Nova agenda'}
+    async function excluirAgenda(id){const ok=await verificarSessao(true);if(!ok)return;if(!confirm('Deseja excluir esta agenda?'))return;const {error}=await supabaseClient.from('agendas').delete().eq('id',id);if(error){console.error(error);aviso('avisoAdmin','erro','Erro ao excluir.');return}aviso('avisoAdmin','ok','Agenda excluída.');await carregarAgendas()}
+
+    supabaseClient.channel('agendas-realtime').on('postgres_changes',{event:'*',schema:'public',table:'agendas'},()=>carregarAgendas()).subscribe();
+    document.addEventListener('DOMContentLoaded',async()=>{await verificarSessao(false);await carregarAgendas()});
+  </script>
+</body>
+</html>
+
